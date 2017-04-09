@@ -8,6 +8,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -148,7 +149,7 @@ public class MjpegViewDefault extends AbstractMjpegView {
                                     }
                                 }
                             } catch (IOException e) {
-
+                                Log.e("MjpegViewDefault", "encountered exception during render", e);
                             }
                         }
                     } finally {
