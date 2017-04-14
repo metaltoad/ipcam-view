@@ -21,6 +21,7 @@ import java.io.IOException;
  * https://code.google.com/archive/p/android-camera-axis
  */
 public class MjpegViewDefault extends AbstractMjpegView {
+    String TAG = MjpegViewDefault.class.getSimpleName();
 
     private SurfaceHolder.Callback mSurfaceHolderCallback;
     private SurfaceView mSurfaceView;
@@ -28,8 +29,8 @@ public class MjpegViewDefault extends AbstractMjpegView {
     private MjpegViewThread thread;
     private MjpegInputStreamDefault mIn = null;
     private boolean showFps = false;
-    private boolean mRun = false;
-    private boolean surfaceDone = false;
+    private volatile boolean mRun = false;
+    private volatile boolean surfaceDone = false;
     private Paint overlayPaint;
     private int overlayTextColor;
     private int overlayBackgroundColor;
@@ -149,7 +150,7 @@ public class MjpegViewDefault extends AbstractMjpegView {
                                     }
                                 }
                             } catch (IOException e) {
-                                Log.e("MjpegViewDefault", "encountered exception during render", e);
+                                Log.e(TAG, "encountered exception during render", e);
                             }
                         }
                     } finally {
@@ -216,6 +217,7 @@ public class MjpegViewDefault extends AbstractMjpegView {
                 }
                 retry = false;
             } catch (InterruptedException e) {
+                Log.e(TAG, "error stopping playback thread", e);
             }
         }
 
@@ -224,6 +226,7 @@ public class MjpegViewDefault extends AbstractMjpegView {
             try {
                 mIn.close();
             } catch (IOException e) {
+                Log.e(TAG, "error closing input stream", e);
             }
             mIn = null;
         }
