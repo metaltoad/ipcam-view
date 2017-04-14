@@ -2,6 +2,7 @@ package com.github.niqdev.mjpeg;
 
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,6 +26,7 @@ import rx.schedulers.Schedulers;
  * </ul>
  */
 public class Mjpeg {
+    final String TAG = Mjpeg.class.getSimpleName();
 
     /**
      * Library implementation type
@@ -93,12 +95,16 @@ public class Mjpeg {
 
     @NonNull
     private Observable<MjpegInputStream> connect(String url) {
+        Log.d(TAG, "connection starting");
+
         return Observable.defer(() -> {
             try {
                 HttpURLConnection urlConnection = (HttpURLConnection) new URL(url).openConnection();
                 if (sendConnectionCloseHeader) {
                     urlConnection.setRequestProperty("Connection", "close");
                 }
+
+                Log.v(TAG, "get inputStream");
                 InputStream inputStream = urlConnection.getInputStream();
                 switch (type) {
                     // handle multiple implementations
@@ -109,6 +115,7 @@ public class Mjpeg {
                 }
                 throw new IllegalStateException("invalid type");
             } catch (IOException e) {
+                Log.e(TAG, "error during connection", e);
                 return Observable.error(e);
             }
         });
