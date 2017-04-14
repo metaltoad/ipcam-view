@@ -13,6 +13,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 
 /*
  * I don't really understand and want to know what the hell it does!
@@ -40,20 +41,22 @@ public class MjpegViewDefault extends AbstractMjpegView {
     private int displayMode;
     private boolean resume = false;
 
+    private final Object mMutex= new Object();
+
     private long delay;
 
     private OnFrameCapturedListener onFrameCapturedListener;
 
     // no more accessible
     class MjpegViewThread extends Thread {
-        private SurfaceHolder mSurfaceHolder;
+        private WeakReference<SurfaceHolder> mSurfaceHolderRef;
         private int frameCounter = 0;
         private long start;
         private Bitmap ovl;
 
         // no more accessible
         MjpegViewThread(SurfaceHolder surfaceHolder) {
-            mSurfaceHolder = surfaceHolder;
+            mSurfaceHolderRef = new WeakReference<SurfaceHolder>(surfaceHolder);
         }
 
         private Rect destRect(int bmw, int bmh) {
@@ -83,7 +86,7 @@ public class MjpegViewDefault extends AbstractMjpegView {
 
         // no more accessible
         void setSurfaceSize(int width, int height) {
-            synchronized (mSurfaceHolder) {
+            synchronized (mMutex) {
                 dispWidth = width;
                 dispHeight = height;
             }
@@ -119,8 +122,8 @@ public class MjpegViewDefault extends AbstractMjpegView {
             while (mRun) {
                 if (surfaceDone) {
                     try {
-                        c = mSurfaceHolder.lockCanvas();
-                        synchronized (mSurfaceHolder) {
+                        c = mSurfaceHolderRef.get().lockCanvas();
+                        synchronized (mMutex) {
                             try {
                                 bm = mIn.readMjpegFrame();
                                 _frameCaptured(bm);
@@ -155,7 +158,7 @@ public class MjpegViewDefault extends AbstractMjpegView {
                         }
                     } finally {
                         if (c != null)
-                            mSurfaceHolder.unlockCanvasAndPost(c);
+                            mSurfaceHolderRef.get().unlockCanvasAndPost(c);
                     }
                 }
             }
@@ -163,7 +166,6 @@ public class MjpegViewDefault extends AbstractMjpegView {
     }
 
     private void init() {
-
         SurfaceHolder holder = mSurfaceView.getHolder();
         holder.addCallback(mSurfaceHolderCallback);
         thread = new MjpegViewThread(holder);
