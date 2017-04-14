@@ -25,14 +25,14 @@ public class MjpegSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     public MjpegSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        switch (getPropertyType(attrs, R.styleable.MjpegSurfaceView, R.styleable.MjpegSurfaceView_type)) {
-            case DEFAULT:
+//        switch (getPropertyType(attrs, R.styleable.MjpegSurfaceView, R.styleable.MjpegSurfaceView_type)) {
+//            case DEFAULT:
                 mMjpegView = new MjpegViewDefault(this, this);
-                break;
-            case NATIVE:
-                mMjpegView = new MjpegViewNative(this, this);
-                break;
-        }
+//                break;
+//            case NATIVE:
+//                mMjpegView = new MjpegViewNative(this, this);
+//                break;
+//        }
     }
 
     public Mjpeg.Type getPropertyType(AttributeSet attributeSet, @StyleableRes int[] attrs, int attrIndex) {
