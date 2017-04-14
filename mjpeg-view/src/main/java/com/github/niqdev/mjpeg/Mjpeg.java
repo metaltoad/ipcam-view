@@ -95,7 +95,7 @@ public class Mjpeg {
 
     @NonNull
     private Observable<MjpegInputStream> connect(String url) {
-        Log.d(TAG, "connection starting");
+        Log.e(TAG, "connection starting");
 
         return Observable.defer(() -> {
             try {
@@ -104,7 +104,7 @@ public class Mjpeg {
                     urlConnection.setRequestProperty("Connection", "close");
                 }
 
-                Log.v(TAG, "get inputStream");
+                Log.e(TAG, "get inputStream");
                 InputStream inputStream = urlConnection.getInputStream();
                 switch (type) {
                     // handle multiple implementations
