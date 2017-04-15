@@ -21,7 +21,7 @@ import java.io.IOException;
  * https://code.google.com/archive/p/android-camera-axis
  */
 public class MjpegViewDefault extends AbstractMjpegView {
-    String TAG = MjpegViewDefault.class.getSimpleName();
+    private static final String TAG = MjpegViewDefault.class.getSimpleName();
 
     private SurfaceHolder.Callback mSurfaceHolderCallback;
     private SurfaceView mSurfaceView;
@@ -122,13 +122,16 @@ public class MjpegViewDefault extends AbstractMjpegView {
                         Log.d(TAG, "locking surface canvas");
                         c = mSurfaceHolder.lockCanvas();
                         if (c == null) { continue; }
+                        Log.d(TAG, "have a valid canvas");
                         synchronized (mSurfaceHolder) {
                             try {
+                                Log.d(TAG, "reading frame");
                                 bm = mIn.readMjpegFrame();
                                 _frameCaptured(bm);
                                 destRect = destRect(bm.getWidth(),
                                         bm.getHeight());
                                 c.drawColor(Color.BLACK);
+                                Log.d(TAG, "drawing bitmap");
                                 c.drawBitmap(bm, null, destRect, p);
                                 if (showFps) {
                                     p.setXfermode(mode);
@@ -190,6 +193,7 @@ public class MjpegViewDefault extends AbstractMjpegView {
     /* all methods/constructors below are no more accessible */
 
     void _startPlayback() {
+        Log.d(TAG, "_startPlayback");
         if (mIn != null && thread != null) {
             mRun = true;
             /*
@@ -202,6 +206,7 @@ public class MjpegViewDefault extends AbstractMjpegView {
     }
 
     void _resumePlayback() {
+        Log.d(TAG, "_resumePlayback");
         mRun = true;
         init();
         thread.start();
@@ -211,7 +216,7 @@ public class MjpegViewDefault extends AbstractMjpegView {
      * @see https://github.com/niqdev/ipcam-view/issues/14
      */
     synchronized void _stopPlayback() {
-        Log.d(TAG, "stopping playback");
+        Log.d(TAG, "_stopPlayback");
         mRun = false;
         boolean retry = true;
         while (retry) {

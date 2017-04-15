@@ -26,7 +26,7 @@ import rx.schedulers.Schedulers;
  * </ul>
  */
 public class Mjpeg {
-    final String TAG = Mjpeg.class.getSimpleName();
+    private static final String TAG = Mjpeg.class.getSimpleName();
 
     /**
      * Library implementation type
