@@ -119,6 +119,7 @@ public class MjpegViewDefault extends AbstractMjpegView {
             while (mRun) {
                 if (surfaceDone) {
                     try {
+                        Log.d(TAG, "locking surface canvas");
                         c = mSurfaceHolder.lockCanvas();
                         synchronized (mSurfaceHolder) {
                             try {
@@ -137,6 +138,7 @@ public class MjpegViewDefault extends AbstractMjpegView {
                                         width = ((ovlPos & 8) == 8) ? destRect.left
                                                 : destRect.right
                                                 - ovl.getWidth();
+                                        Log.d(TAG, "drawing bitmap");
                                         c.drawBitmap(ovl, width, height, null);
                                     }
                                     p.setXfermode(null);
@@ -155,6 +157,7 @@ public class MjpegViewDefault extends AbstractMjpegView {
                         }
                     } finally {
                         if (c != null)
+                            Log.d(TAG, "unlocking surface canvas");
                             mSurfaceHolder.unlockCanvasAndPost(c);
                     }
                 }
@@ -214,6 +217,7 @@ public class MjpegViewDefault extends AbstractMjpegView {
             try {
                 // make sure the thread is not null
                 if (thread != null) {
+                    Log.d(TAG, "stopping thread");
                     thread.join();
                 }
                 retry = false;
@@ -226,8 +230,9 @@ public class MjpegViewDefault extends AbstractMjpegView {
         // close the connection
         if (mIn != null) {
             try {
+                Log.d(TAG, "closing input stream");
                 mIn.close();
-                Log.d(TAG, "stopped input stream");
+                Log.d(TAG, "closed input stream");
             } catch (IOException e) {
                 Log.e(TAG, "error closing input stream", e);
             }
