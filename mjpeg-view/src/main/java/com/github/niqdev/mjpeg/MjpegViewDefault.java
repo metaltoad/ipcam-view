@@ -207,6 +207,7 @@ public class MjpegViewDefault extends AbstractMjpegView {
      * @see https://github.com/niqdev/ipcam-view/issues/14
      */
     void _stopPlayback() {
+        Log.d(TAG, "stopping playback");
         mRun = false;
         boolean retry = true;
         while (retry) {
@@ -216,6 +217,7 @@ public class MjpegViewDefault extends AbstractMjpegView {
                     thread.join();
                 }
                 retry = false;
+                Log.d(TAG, "stopped thread");
             } catch (InterruptedException e) {
                 Log.e(TAG, "error stopping playback thread", e);
             }
@@ -225,11 +227,13 @@ public class MjpegViewDefault extends AbstractMjpegView {
         if (mIn != null) {
             try {
                 mIn.close();
+                Log.d(TAG, "stopped input stream");
             } catch (IOException e) {
                 Log.e(TAG, "error closing input stream", e);
             }
             mIn = null;
         }
+        Log.d(TAG, "playback is stopped");
     }
 
     void _surfaceChanged(SurfaceHolder holder, int f, int w, int h) {
