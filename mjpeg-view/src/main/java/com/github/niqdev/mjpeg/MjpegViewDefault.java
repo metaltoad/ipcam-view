@@ -160,9 +160,12 @@ public class MjpegViewDefault extends AbstractMjpegView {
                             }
                         }
                     } finally {
-                        if (c != null)
+                        if (c != null) {
                             Log.d(TAG, "unlocking surface canvas");
                             mSurfaceHolder.unlockCanvasAndPost(c);
+                        } else {
+                            Log.e(TAG, "couldn't unlock surface canvas");
+                        }
                     }
                 }
             }
