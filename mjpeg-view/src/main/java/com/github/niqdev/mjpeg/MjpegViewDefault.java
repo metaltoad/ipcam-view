@@ -121,7 +121,10 @@ public class MjpegViewDefault extends AbstractMjpegView {
                     try {
                         Log.d(TAG, "locking surface canvas");
                         c = mSurfaceHolder.lockCanvas();
-                        if (c == null) { continue; }
+                        if (c == null) {
+                            Log.w(TAG, "null canvas, skipping render");
+                            continue;
+                        }
                         Log.d(TAG, "have a valid canvas");
                         synchronized (mSurfaceHolder) {
                             try {
