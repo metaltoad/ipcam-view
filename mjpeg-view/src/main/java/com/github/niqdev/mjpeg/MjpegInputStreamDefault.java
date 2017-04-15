@@ -33,20 +33,25 @@ public class MjpegInputStreamDefault extends MjpegInputStream {
     }
 
     private int getEndOfSeqeunce(DataInputStream in, byte[] sequence) throws IOException {
+        Log.d(TAG, "getEndOfSeq start");
         int seqIndex = 0;
         byte c;
         for (int i = 0; i < FRAME_MAX_LENGTH; i++) {
             c = (byte) in.readUnsignedByte();
             if (c == sequence[seqIndex]) {
                 seqIndex++;
+                Log.d(TAG, "getEndOfSeq normal end");
                 if (seqIndex == sequence.length) return i + 1;
             } else seqIndex = 0;
         }
+        Log.d(TAG, "getEndOfSeq alternate end");
         return -1;
     }
 
     private int getStartOfSequence(DataInputStream in, byte[] sequence) throws IOException {
+        Log.d(TAG, "getStartOfSequence start");
         int end = getEndOfSeqeunce(in, sequence);
+        Log.d(TAG, "getStartOfSequence end");
         return (end < 0) ? (-1) : (end - sequence.length);
     }
 
