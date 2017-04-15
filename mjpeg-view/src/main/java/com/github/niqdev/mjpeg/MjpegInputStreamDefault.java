@@ -37,12 +37,20 @@ public class MjpegInputStreamDefault extends MjpegInputStream {
         int seqIndex = 0;
         byte c;
         for (int i = 0; i < FRAME_MAX_LENGTH; i++) {
+            Log.d(TAG, "getEndOfSeq i=" + i);
             c = (byte) in.readUnsignedByte();
             if (c == sequence[seqIndex]) {
                 seqIndex++;
-                Log.d(TAG, "getEndOfSeq normal end");
-                if (seqIndex == sequence.length) return i + 1;
-            } else seqIndex = 0;
+                if (seqIndex == sequence.length) {
+                    Log.d(TAG, "getEndOfSeq normal end");
+                    return i + 1;
+                } else {
+                    Log.d(TAG, "getEndOfSeq fallthrough?");
+                }
+            } else {
+                Log.d(TAG, "getEndOfSeq seqIndex=0");
+                seqIndex = 0;
+            }
         }
         Log.d(TAG, "getEndOfSeq alternate end");
         return -1;
