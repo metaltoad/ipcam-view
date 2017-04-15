@@ -121,6 +121,7 @@ public class MjpegViewDefault extends AbstractMjpegView {
                     try {
                         Log.d(TAG, "locking surface canvas");
                         c = mSurfaceHolder.lockCanvas();
+                        if (c == null) { continue; }
                         synchronized (mSurfaceHolder) {
                             try {
                                 bm = mIn.readMjpegFrame();
@@ -209,7 +210,7 @@ public class MjpegViewDefault extends AbstractMjpegView {
     /*
      * @see https://github.com/niqdev/ipcam-view/issues/14
      */
-    void _stopPlayback() {
+    synchronized void _stopPlayback() {
         Log.d(TAG, "stopping playback");
         mRun = false;
         boolean retry = true;
@@ -248,11 +249,13 @@ public class MjpegViewDefault extends AbstractMjpegView {
     }
 
     void _surfaceDestroyed(SurfaceHolder holder) {
+        Log.d(TAG, "surface destroyed start");
         surfaceDone = false;
         _stopPlayback();
         if (thread != null) {
             thread = null;
         }
+        Log.d(TAG, "surface destroyed end");
     }
 
     void _frameCaptured(Bitmap bitmap){
