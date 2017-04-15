@@ -100,6 +100,7 @@ public class Mjpeg {
         return Observable.defer(() -> {
             try {
                 HttpURLConnection urlConnection = (HttpURLConnection) new URL(url).openConnection();
+                urlConnection.setRequestProperty("Cache-Control", "no-cache");
                 if (sendConnectionCloseHeader) {
                     urlConnection.setRequestProperty("Connection", "close");
                 }
