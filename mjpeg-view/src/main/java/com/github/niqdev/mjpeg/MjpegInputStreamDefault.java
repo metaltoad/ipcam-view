@@ -64,12 +64,16 @@ public class MjpegInputStreamDefault extends MjpegInputStream {
         int headerLen = getStartOfSequence(this, SOI_MARKER);
         reset();
         byte[] header = new byte[headerLen];
+        Log.d(TAG, "readMjpegFrame read header");
         readFully(header);
         try {
+            Log.d(TAG, "attempt to parseContentLength");
             mContentLength = parseContentLength(header);
         } catch (NumberFormatException nfe) {
+            Log.d(TAG, "attempt to getEndOfSequence");
             mContentLength = getEndOfSeqeunce(this, EOF_MARKER);
         }
+        Log.d(TAG, "readMjpegFrame reset");
         reset();
         byte[] frameData = new byte[mContentLength];
         skipBytes(headerLen);
