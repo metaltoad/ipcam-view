@@ -2,7 +2,6 @@ package com.github.niqdev.mjpeg;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -33,33 +32,24 @@ public class MjpegInputStreamDefault extends MjpegInputStream {
     }
 
     private int getEndOfSeqeunce(DataInputStream in, byte[] sequence) throws IOException {
-        Log.d(TAG, "getEndOfSeq start");
         int seqIndex = 0;
         byte c;
         for (int i = 0; i < FRAME_MAX_LENGTH; i++) {
-            Log.d(TAG, "getEndOfSeq i=" + i);
             c = (byte) in.readUnsignedByte();
             if (c == sequence[seqIndex]) {
                 seqIndex++;
                 if (seqIndex == sequence.length) {
-                    Log.d(TAG, "getEndOfSeq normal end");
                     return i + 1;
-                } else {
-                    Log.d(TAG, "getEndOfSeq fallthrough?");
                 }
             } else {
-                Log.d(TAG, "getEndOfSeq seqIndex=0");
                 seqIndex = 0;
             }
         }
-        Log.d(TAG, "getEndOfSeq alternate end");
         return -1;
     }
 
     private int getStartOfSequence(DataInputStream in, byte[] sequence) throws IOException {
-        Log.d(TAG, "getStartOfSequence start");
         int end = getEndOfSeqeunce(in, sequence);
-        Log.d(TAG, "getStartOfSequence end");
         return (end < 0) ? (-1) : (end - sequence.length);
     }
 
@@ -72,26 +62,20 @@ public class MjpegInputStreamDefault extends MjpegInputStream {
 
     // no more accessible
     Bitmap readMjpegFrame() throws IOException {
-        Log.d(TAG, "readMjpegFrame start");
         mark(FRAME_MAX_LENGTH);
         int headerLen = getStartOfSequence(this, SOI_MARKER);
         reset();
         byte[] header = new byte[headerLen];
-        Log.d(TAG, "readMjpegFrame read header");
         readFully(header);
         try {
-            Log.d(TAG, "attempt to parseContentLength");
             mContentLength = parseContentLength(header);
         } catch (NumberFormatException nfe) {
-            Log.d(TAG, "attempt to getEndOfSequence");
             mContentLength = getEndOfSeqeunce(this, EOF_MARKER);
         }
-        Log.d(TAG, "readMjpegFrame reset");
         reset();
         byte[] frameData = new byte[mContentLength];
         skipBytes(headerLen);
         readFully(frameData);
-        Log.d(TAG, "readMjpegFrame end");
         return BitmapFactory.decodeStream(new ByteArrayInputStream(frameData));
     }
 }

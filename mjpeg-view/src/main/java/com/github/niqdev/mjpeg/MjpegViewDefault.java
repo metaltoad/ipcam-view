@@ -119,22 +119,18 @@ public class MjpegViewDefault extends AbstractMjpegView {
             while (mRun) {
                 if (surfaceDone) {
                     try {
-                        Log.d(TAG, "locking surface canvas");
                         c = mSurfaceHolder.lockCanvas();
                         if (c == null) {
                             Log.w(TAG, "null canvas, skipping render");
                             continue;
                         }
-                        Log.d(TAG, "have a valid canvas");
                         synchronized (mSurfaceHolder) {
                             try {
-                                Log.d(TAG, "reading frame");
                                 bm = mIn.readMjpegFrame();
                                 _frameCaptured(bm);
                                 destRect = destRect(bm.getWidth(),
                                         bm.getHeight());
                                 c.drawColor(Color.BLACK);
-                                Log.d(TAG, "drawing bitmap");
                                 c.drawBitmap(bm, null, destRect, p);
                                 if (showFps) {
                                     p.setXfermode(mode);
@@ -145,7 +141,6 @@ public class MjpegViewDefault extends AbstractMjpegView {
                                         width = ((ovlPos & 8) == 8) ? destRect.left
                                                 : destRect.right
                                                 - ovl.getWidth();
-                                        Log.d(TAG, "drawing bitmap");
                                         c.drawBitmap(ovl, width, height, null);
                                     }
                                     p.setXfermode(null);
@@ -164,10 +159,9 @@ public class MjpegViewDefault extends AbstractMjpegView {
                         }
                     } finally {
                         if (c != null) {
-                            Log.d(TAG, "unlocking surface canvas");
                             mSurfaceHolder.unlockCanvasAndPost(c);
                         } else {
-                            Log.e(TAG, "couldn't unlock surface canvas");
+                            Log.w(TAG, "couldn't unlock surface canvas");
                         }
                     }
                 }
@@ -199,7 +193,6 @@ public class MjpegViewDefault extends AbstractMjpegView {
     /* all methods/constructors below are no more accessible */
 
     void _startPlayback() {
-        Log.d(TAG, "_startPlayback");
         if (mIn != null && thread != null) {
             mRun = true;
             /*
@@ -212,7 +205,6 @@ public class MjpegViewDefault extends AbstractMjpegView {
     }
 
     void _resumePlayback() {
-        Log.d(TAG, "_resumePlayback");
         mRun = true;
         init();
         thread.start();
@@ -222,18 +214,15 @@ public class MjpegViewDefault extends AbstractMjpegView {
      * @see https://github.com/niqdev/ipcam-view/issues/14
      */
     synchronized void _stopPlayback() {
-        Log.d(TAG, "_stopPlayback");
         mRun = false;
         boolean retry = true;
         while (retry) {
             try {
                 // make sure the thread is not null
                 if (thread != null) {
-                    Log.d(TAG, "stopping thread");
                     thread.join();
                 }
                 retry = false;
-                Log.d(TAG, "stopped thread");
             } catch (InterruptedException e) {
                 Log.e(TAG, "error stopping playback thread", e);
             }
@@ -242,15 +231,12 @@ public class MjpegViewDefault extends AbstractMjpegView {
         // close the connection
         if (mIn != null) {
             try {
-                Log.d(TAG, "closing input stream");
                 mIn.close();
-                Log.d(TAG, "closed input stream");
             } catch (IOException e) {
                 Log.e(TAG, "error closing input stream", e);
             }
             mIn = null;
         }
-        Log.d(TAG, "playback is stopped");
     }
 
     void _surfaceChanged(SurfaceHolder holder, int f, int w, int h) {
@@ -260,13 +246,11 @@ public class MjpegViewDefault extends AbstractMjpegView {
     }
 
     void _surfaceDestroyed(SurfaceHolder holder) {
-        Log.d(TAG, "surface destroyed start");
         surfaceDone = false;
         _stopPlayback();
         if (thread != null) {
             thread = null;
         }
-        Log.d(TAG, "surface destroyed end");
     }
 
     void _frameCaptured(Bitmap bitmap){
