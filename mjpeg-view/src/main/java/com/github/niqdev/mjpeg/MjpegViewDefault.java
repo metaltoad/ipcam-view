@@ -220,7 +220,7 @@ public class MjpegViewDefault extends AbstractMjpegView {
             try {
                 // make sure the thread is not null
                 if (thread != null) {
-                    thread.join();
+                    thread.join(1500);
                 }
                 retry = false;
             } catch (InterruptedException e) {
