@@ -2,6 +2,7 @@ package com.github.niqdev.mjpeg;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -40,6 +41,8 @@ public class MjpegInputStreamDefault extends MjpegInputStream {
                 seqIndex++;
                 if (seqIndex == sequence.length) {
                     return i + 1;
+                } else {
+                    Log.d(TAG, "?");
                 }
             } else {
                 seqIndex = 0;
