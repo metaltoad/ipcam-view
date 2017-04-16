@@ -41,8 +41,6 @@ public class MjpegInputStreamDefault extends MjpegInputStream {
                 seqIndex++;
                 if (seqIndex == sequence.length) {
                     return i + 1;
-                } else {
-                    Log.d(TAG, "?");
                 }
             } else {
                 seqIndex = 0;
