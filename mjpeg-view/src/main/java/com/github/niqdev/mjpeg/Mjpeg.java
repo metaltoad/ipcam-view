@@ -144,5 +144,4 @@ public class Mjpeg {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread());
     }
-
 }

@@ -40,8 +40,6 @@ public class MjpegViewDefault extends AbstractMjpegView {
     private int displayMode;
     private boolean resume = false;
 
-    private long delay;
-
     private OnFrameCapturedListener onFrameCapturedListener;
 
     // no more accessible
@@ -170,7 +168,6 @@ public class MjpegViewDefault extends AbstractMjpegView {
     }
 
     private void init() {
-
         SurfaceHolder holder = mSurfaceView.getHolder();
         holder.addCallback(mSurfaceHolderCallback);
         thread = new MjpegViewThread(holder);
@@ -365,6 +362,4 @@ public class MjpegViewDefault extends AbstractMjpegView {
     public void setOnFrameCapturedListener(OnFrameCapturedListener onFrameCapturedListener) {
         this.onFrameCapturedListener = onFrameCapturedListener;
     }
-
 }
-
